@@ -36,6 +36,7 @@ export default function useInputScrollHandler(options: Options = {}) {
   // Refs
   const ref = useRef<ScrollView>(null);
   const offset = useRef<NativeScrollPoint>();
+  const handledOffset = useRef<NativeScrollPoint>();
 
   // Window
   const screen = useWindowDimensions();
@@ -128,10 +129,22 @@ export default function useInputScrollHandler(options: Options = {}) {
         }
       }
     );
+
+    handledOffset.current = offset.current;
   };
 
   const handleResetKeyboardSpace: KeyboardEventListener = () => {
     setKeyboardSpace(0);
+
+    if (handledOffset.current) {
+      const responder = getScrollResponder();
+
+      responder.scrollTo({
+        x: handledOffset.current.x,
+        y: handledOffset.current.y,
+        animated: true,
+      });
+    }
   };
 
   // Effects
