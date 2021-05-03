@@ -1,18 +1,56 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import UseInputScrollHandler from 'react-native-use-input-scroll-handler';
+import { StyleSheet, ScrollView, View, TextInput } from 'react-native';
+import useInputScrollHandler from 'react-native-use-input-scroll-handler';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    UseInputScrollHandler.multiply(3, 7).then(setResult);
-  }, []);
+  const { scrollHandler } = useInputScrollHandler();
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <ScrollView style={styles.container} {...scrollHandler}>
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+        <TextInput placeholder="Test" />
+      </ScrollView>
+      <View style={styles.footer} />
     </View>
   );
 }
@@ -20,12 +58,14 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   box: {
     width: 60,
     height: 60,
     marginVertical: 20,
+  },
+  footer: {
+    height: 150,
+    backgroundColor: 'red',
   },
 });
