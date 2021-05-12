@@ -1,5 +1,7 @@
 # react-native-use-input-scroll-handler
 
+<img src="https://user-images.githubusercontent.com/3551795/118034222-bc615280-b337-11eb-944e-6dc0a3631176.gif" width="200">
+
 A react-native hook that handle auto-scroll when input is focused and behind keyboard.
 
 ## Installation
