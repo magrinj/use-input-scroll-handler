@@ -1,6 +1,6 @@
 {
   "name": "react-native-use-input-scroll-handler",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A react-native hook that handle auto-scroll when input is focused and behind keyboard.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
