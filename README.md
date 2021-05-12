@@ -5,18 +5,30 @@ A react-native hook that handle auto-scroll when input is focused and behind key
 ## Installation
 
 ```sh
-npm install react-native-use-input-scroll-handler
+yarn add react-native-use-input-scroll-handler
 ```
 
 ## Usage
 
 ```js
-import UseInputScrollHandler from "react-native-use-input-scroll-handler";
+import useInputScrollHandler from "react-native-use-input-scroll-handler";
 
 // ...
 
-const result = await UseInputScrollHandler.multiply(3, 7);
+const { scrollHandler } = useInputScrollHandler();
+
+<ScrollView {...scrollHandler}>
 ```
+
+## API
+
+Custom options can be passed to this hook.
+
+| **Option**                  | **Type**                         | **Description**                                                                                |
+| --------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `ref`                       | `MutableRefObject`               | Use this if you need to use your own scroll view ref.                                          |
+| `extraScrollHeight`         | `number`                         | Adds an extra offset to the keyboard. Useful if you want to stick elements above the keyboard. |
+| `keyboardOpeningTime`       | `number`                         | Sets the delay time before scrolling to new position, default is 250                           |
 
 ## Contributing
 

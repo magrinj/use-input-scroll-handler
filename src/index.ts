@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, MutableRefObject } from 'react';
 import {
   ScrollView,
   UIManager,
@@ -14,8 +14,6 @@ import {
   useWindowDimensions,
 } from 'react-native';
 
-import { useLayout } from './utils/useLayout';
-
 const _keyboardWillShow: KeyboardEventName = Platform.select({
   ios: 'keyboardWillShow',
   android: 'keyboardDidShow',
@@ -28,26 +26,23 @@ const _keyboardWillHide: KeyboardEventName = Platform.select({
 });
 
 export interface Options {
+  ref?: MutableRefObject<ScrollView>;
   extraScrollHeight?: number;
   keyboardOpeningTime?: number;
 }
 
 export default function useInputScrollHandler(options: Options = {}) {
   // Refs
-  const ref = useRef<ScrollView>(null);
+  const ref = useRef<ScrollView>(options.ref?.current ?? null);
   const offset = useRef<NativeScrollPoint>();
   const handledOffset = useRef<NativeScrollPoint>();
 
   // Window
   const screen = useWindowDimensions();
 
-  // Layout
-  const { onLayout, ...layout } = useLayout();
-
   // Variables
   const extraScrollHeight = options?.extraScrollHeight ?? 0;
   const keyboardOpeningTime = options?.keyboardOpeningTime ?? 250;
-  const bottomSpace = screen.height - (layout.y + layout.height);
 
   // States
   const [keyboardSpace, setKeyboardSpace] = useState(0);
@@ -59,23 +54,26 @@ export default function useInputScrollHandler(options: Options = {}) {
     return responder;
   };
 
-  const scrollToFocusedInput = (reactNode: any) => {
+  const scrollToFocusedInput = (reactNode: any, additionalOffset: number) => {
     setTimeout(() => {
       const responder = getScrollResponder();
 
       responder &&
         responder.scrollResponderScrollNativeHandleToKeyboard(
           reactNode,
-          extraScrollHeight,
-          true
+          additionalOffset + extraScrollHeight,
+          false
         );
     }, keyboardOpeningTime);
   };
 
-  const scrollToFocusedInputWithNodeHandle = (nodeID: number) => {
+  const scrollToFocusedInputWithNodeHandle = (
+    nodeID: number,
+    additionalOffset: number
+  ) => {
     const reactNode = findNodeHandle(nodeID);
 
-    scrollToFocusedInput(reactNode);
+    scrollToFocusedInput(reactNode, additionalOffset);
   };
 
   const handleOnScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -90,47 +88,72 @@ export default function useInputScrollHandler(options: Options = {}) {
       : TextInput.State.currentlyFocusedField();
     const responder = getScrollResponder();
 
-    setKeyboardSpace(
-      e.endCoordinates.height + (options.extraScrollHeight ?? 0) - bottomSpace
-    );
-
     if (!currentlyFocusedField || !responder) {
       return;
     }
 
-    // @ts-ignore
-    UIManager.viewIsDescendantOf(
-      currentlyFocusedField,
-      responder.getInnerViewNode(),
-      (isAncestor: boolean) => {
-        if (isAncestor) {
-          UIManager.measureInWindow(
-            currentlyFocusedField,
-            (_x: number, y: number, _width: number, height: number) => {
-              const textInputBottomPosition = y + height;
-              const keyboardPosition = e.endCoordinates.screenY;
-              const totalExtraHeight = options.extraScrollHeight ?? 0;
+    handledOffset.current = offset.current;
 
-              if (Platform.OS === 'ios') {
-                if (
-                  textInputBottomPosition >
-                  keyboardPosition - totalExtraHeight
-                ) {
-                  scrollToFocusedInputWithNodeHandle(currentlyFocusedField);
-                }
-              } else {
-                responder.scrollTo({
-                  y: (offset.current?.y ?? 0) + extraScrollHeight,
-                  animated: true,
-                });
-              }
+    // Calculate scroll view position
+    UIManager.measure(
+      responder.getScrollableNode(),
+      (
+        _scrollX: number,
+        _scrollY: number,
+        _scrollWidth: number,
+        scrollHeight: number,
+        _scrollPageX: number,
+        scrollPageY: number
+      ) => {
+        const bottomSpace = screen.height - (scrollPageY + scrollHeight);
+
+        setKeyboardSpace(
+          e.endCoordinates.height + extraScrollHeight - bottomSpace
+        );
+
+        // @ts-ignore
+        UIManager.viewIsDescendantOf(
+          currentlyFocusedField,
+          responder.getInnerViewNode(),
+          (isAncestor: boolean) => {
+            if (!isAncestor) {
+              return;
             }
-          );
-        }
+
+            UIManager.measureInWindow(
+              currentlyFocusedField,
+              (
+                _inputX: number,
+                inputY: number,
+                _inputWidth: number,
+                inputHeight: number
+              ) => {
+                const textInputBottomPosition = inputY + inputHeight;
+                const keyboardPosition = e.endCoordinates.screenY;
+                const totalExtraHeight = extraScrollHeight;
+
+                if (Platform.OS === 'ios') {
+                  if (
+                    textInputBottomPosition >
+                    keyboardPosition - totalExtraHeight
+                  ) {
+                    scrollToFocusedInputWithNodeHandle(
+                      currentlyFocusedField,
+                      scrollPageY
+                    );
+                  }
+                } else {
+                  responder.scrollTo({
+                    y: (offset.current?.y ?? 0) + extraScrollHeight,
+                    animated: true,
+                  });
+                }
+              }
+            );
+          }
+        );
       }
     );
-
-    handledOffset.current = offset.current;
   };
 
   const handleResetKeyboardSpace: KeyboardEventListener = () => {
@@ -165,7 +188,6 @@ export default function useInputScrollHandler(options: Options = {}) {
       contentContainerStyle: { paddingBottom: keyboardSpace },
       onScroll: handleOnScroll,
       scrollEventThrottle: 16,
-      onLayout,
     },
     keyboardSpace,
   };

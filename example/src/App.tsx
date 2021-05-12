@@ -1,62 +1,57 @@
 import * as React from 'react';
-
-import { StyleSheet, ScrollView, View, TextInput } from 'react-native';
+import { StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import useInputScrollHandler from 'react-native-use-input-scroll-handler';
+
+import Input from './atoms/Input';
 
 export default function App() {
   const { scrollHandler } = useInputScrollHandler();
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={styles.container} {...scrollHandler}>
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
-        <TextInput placeholder="Test" />
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView} {...scrollHandler}>
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
+        <Input placeholder="Test" />
       </ScrollView>
-      <View style={styles.footer} />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  scrollView: {
     flex: 1,
   },
   box: {
